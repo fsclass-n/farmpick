@@ -1,0 +1,24 @@
+# Backend
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+python-dotenv==1.0.1
+PyJWT==2.10.1
+pydantic==2.10.4
+python-multipart==0.0.20
+SQLAlchemy==2.0.36
+PyMySQL==1.1.1
+
+# Data collection & analysis
+requests==2.32.3
+beautifulsoup4==4.12.3
+playwright==1.49.1
+numpy==2.2.1
+pandas==2.2.3
+scikit-learn==1.6.1
+
+# Image processing
+Pillow==11.1.0
+opencv-python-headless==4.10.0.84
+
+# AI
+google-generativeai==0.8.3

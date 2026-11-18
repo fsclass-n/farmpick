@@ -1,0 +1,185 @@
+@import "tailwindcss";
+
+@theme {
+  --font-heading: "IBM Plex Sans KR", sans-serif;
+  --font-body: "Noto Sans KR", sans-serif;
+
+  /* 딥 포레스트 — 메인 */
+  --color-forest-50: #f2f8f4;
+  --color-forest-100: #dcefe2;
+  --color-forest-200: #b9dfc6;
+  --color-forest-300: #8cc9a3;
+  --color-forest-400: #57ab7b;
+  --color-forest-500: #2f8f5e;
+  --color-forest-600: #1f7349;
+  --color-forest-700: #185c3c;
+  --color-forest-800: #124530;
+  --color-forest-900: #0c3224;
+  --color-forest-950: #06231a;
+
+  /* 새싹 라임 — 포인트 */
+  --color-sprout-300: #d4f27c;
+  --color-sprout-400: #bdea4a;
+  --color-sprout-500: #a3e635;
+
+  /* 웜 페이퍼 */
+  --color-paper: #f7f5ef;
+  --color-clay: #e9e4d8;
+  --color-harvest: #e8a13c;
+
+  /* 기존 클래스 호환 (primary-* → forest) */
+  --color-primary-50: var(--color-forest-50);
+  --color-primary-100: var(--color-forest-100);
+  --color-primary-200: var(--color-forest-200);
+  --color-primary-300: var(--color-forest-300);
+  --color-primary-400: var(--color-forest-400);
+  --color-primary-500: var(--color-forest-500);
+  --color-primary-600: var(--color-forest-600);
+  --color-primary-700: var(--color-forest-700);
+  --color-primary-800: var(--color-forest-800);
+}
+
+html {
+  font-family: var(--font-body);
+  scroll-behavior: smooth;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-heading);
+}
+
+body {
+  background-color: var(--color-paper);
+}
+
+/* ---------- 독창 디자인 요소 ---------- */
+
+/* 밭 이랑(field furrow) 패턴 — 히어로·푸터 배경 */
+.furrows {
+  background-image: repeating-linear-gradient(
+    -35deg,
+    transparent 0 14px,
+    rgba(255, 255, 255, 0.045) 14px 16px
+  );
+}
+.furrows-light {
+  background-image: repeating-linear-gradient(
+    -35deg,
+    transparent 0 14px,
+    rgba(12, 50, 36, 0.05) 14px 16px
+  );
+}
+
+/* 잎맥(vein) 장식 라인 */
+.leaf-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--color-forest-600);
+}
+.leaf-divider::before,
+.leaf-divider::after {
+  content: "";
+  height: 1px;
+  flex: 1;
+  background: linear-gradient(90deg, transparent, var(--color-forest-200));
+}
+.leaf-divider::after {
+  background: linear-gradient(90deg, var(--color-forest-200), transparent);
+}
+
+/* AI 스캐너 — 진단 분석 중 스캔 라인 */
+.scanner {
+  position: relative;
+  overflow: hidden;
+}
+.scanner::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  height: 3px;
+  top: 0;
+  background: linear-gradient(90deg, transparent, var(--color-sprout-400), transparent);
+  box-shadow: 0 0 18px 4px rgba(163, 230, 53, 0.5);
+  animation: scanline 1.8s ease-in-out infinite;
+}
+@keyframes scanline {
+  0%, 100% { top: 0; opacity: 1; }
+  50% { top: calc(100% - 3px); opacity: 0.9; }
+}
+
+/* 글래스 카드 */
+.glass {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+.glass-dark {
+  background: rgba(6, 35, 26, 0.55);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(163, 230, 53, 0.15);
+}
+
+/* 오가닉 카드 — 한쪽 모서리만 크게 */
+.organic-card {
+  border-radius: 1.5rem 0.5rem 1.5rem 0.5rem;
+}
+.organic-card-alt {
+  border-radius: 0.5rem 1.5rem 0.5rem 1.5rem;
+}
+
+/* 햄버거 ↔ X */
+.burger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: currentColor;
+  transition: transform 0.3s, opacity 0.3s;
+}
+.burger span + span { margin-top: 5px; }
+.burger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.burger.open span:nth-child(2) { opacity: 0; }
+.burger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.drawer { transition: transform 0.3s ease-in-out; }
+.fade-in { animation: fadeIn 0.25s ease-in; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* 슬로우 플로트 — 히어로 장식 */
+.float-slow { animation: floatY 6s ease-in-out infinite; }
+.float-slower { animation: floatY 9s ease-in-out infinite; }
+@keyframes floatY {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
+
+/* 마퀴 알림 */
+.marquee { animation: marquee 26s linear infinite; }
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #e5e2d9 25%, #f0ede4 50%, #e5e2d9 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: 0.5rem;
+}
+@keyframes shimmer { to { background-position: -200% 0; } }
+
+/* 펄스 도트 — 발생 주의 배지 */
+.pulse-dot::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  margin-right: 6px;
+  background: currentColor;
+  animation: pulseDot 1.6s ease-in-out infinite;
+}
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.75); }
+}

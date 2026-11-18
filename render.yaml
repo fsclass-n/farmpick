@@ -1,0 +1,36 @@
+# Render Blueprint — https://farmpick.onrender.com + https://farmpick-api.onrender.com
+services:
+  # 백엔드 API — https://farmpick-api.onrender.com
+  - type: web
+    name: farmpick-api
+    runtime: python
+    plan: free
+    rootDir: backend
+    buildCommand: "pip install -r ../requirements.txt"
+    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: ADMIN_SECRET_KEY
+        generateValue: true
+      - key: CORS_ORIGINS
+        value: https://farmpick.netlify.app,https://farmpick.onrender.com
+      - key: GEMINI_API_KEY
+        sync: false        # Render 대시보드에서 직접 입력
+      - key: DATABASE_URL  # mysql+pymysql://...@gateway...tidbcloud.com:4000/farmpick
+        sync: false
+
+  # 프런트엔드 Static Site — https://farmpick.onrender.com
+  - type: static
+    name: farmpick
+    rootDir: frontend
+    buildCommand: "npm ci && npm run build"
+    staticPublishPath: dist
+    pullRequestPreviewsEnabled: false
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_BASE_URL
+        value: https://farmpick-api.onrender.com

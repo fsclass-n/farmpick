@@ -1,0 +1,84 @@
+name: farmpick CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  backend-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: |
+          pip install fastapi "uvicorn[standard]" python-dotenv PyJWT python-multipart
+          cd backend && python -c "from app.main import app"
+
+  frontend-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: |
+          cd frontend
+          npm ci
+          npm run build
+
+  # 변경 영역 감지 (push 시점 diff, 첫 푸시/PR 대응)
+  changes:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    outputs:
+      frontend: ${{ steps.filter.outputs.frontend }}
+      backend: ${{ steps.filter.outputs.backend }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: filter
+        run: |
+          BASE="${{ github.event.before }}"
+          if [ -z "$BASE" ] || [ "$BASE" = "0000000000000000000000000000000000000000" ]; then
+            BASE="HEAD~1"
+          fi
+          echo "base=$BASE"
+          CHANGED=$(git diff --name-only "$BASE" HEAD || git diff --name-only HEAD~1 HEAD)
+          echo "$CHANGED" | grep -q '^frontend/' && echo "frontend=true" >> "$GITHUB_OUTPUT" || echo "frontend=false" >> "$GITHUB_OUTPUT"
+          echo "$CHANGED" | grep -qE '^(backend|pipeline|requirements.txt)' && echo "backend=true" >> "$GITHUB_OUTPUT" || echo "backend=false" >> "$GITHUB_OUTPUT"
+
+  # frontend/ 변경 → Netlify 데모 + Render Static Site 배포 훅
+  deploy-frontend:
+    needs: [frontend-build, changes]
+    if: needs.changes.outputs.frontend == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Netlify deploy (demo)
+        if: secrets.NETLIFY_BUILD_HOOK != ''
+        env:
+          HOOK: ${{ secrets.NETLIFY_BUILD_HOOK }}
+        run: curl -fsSL -X POST "$HOOK"
+      - name: Trigger Render static site deploy
+        if: secrets.RENDER_FRONTEND_DEPLOY_HOOK != ''
+        env:
+          HOOK: ${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK }}
+        run: curl -fsSL -X POST "$HOOK"
+
+  # backend/, pipeline/ 변경 → Render API 배포 훅
+  deploy-backend:
+    needs: [backend-check, changes]
+    if: needs.changes.outputs.backend == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render API deploy
+        if: secrets.RENDER_API_DEPLOY_HOOK != ''
+        env:
+          HOOK: ${{ secrets.RENDER_API_DEPLOY_HOOK }}
+        run: curl -fsSL -X POST "$HOOK"
