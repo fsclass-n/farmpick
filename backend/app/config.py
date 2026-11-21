@@ -3,8 +3,11 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-load_dotenv(Path(__file__).resolve().parents[2] / ".env")
-load_dotenv(Path(__file__).resolve().parents[3] / ".env")
+# 상위 디렉터리를 순회하며 .env를 찾는다 (로컬: 프로젝트 루트, Docker: /app 상위)
+for _parent in Path(__file__).resolve().parents:
+    _env = _parent / ".env"
+    if _env.exists():
+        load_dotenv(_env)
 
 
 class Settings:
