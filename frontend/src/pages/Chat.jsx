@@ -33,25 +33,24 @@ export default function Chat() {
   };
 
   return (
-    <div className="mx-auto flex h-[calc(100vh-13rem)] max-w-3xl flex-col">
+    <div className="mx-auto flex h-[calc(100vh-14rem)] max-w-3xl flex-col">
       <div className="mb-4">
-        <h1 className="font-heading text-2xl font-bold text-gray-900">AI 상담</h1>
-        <p className="text-sm text-gray-500">병해충 DB와 진단 이력을 근거로 답변합니다.</p>
+        <p className="eyebrow">AI Assistant</p>
+        <h1 className="page-title">AI 상담</h1>
+        <p className="page-desc">병해충 DB와 진단 이력을 근거로 답변합니다.</p>
       </div>
 
-      <div className="flex-1 space-y-4 overflow-y-auto rounded-2xl border border-gray-200 bg-white p-5">
+      <div className="hairline flex-1 space-y-4 overflow-y-auto bg-white p-5">
         {messages.map((m, i) => (
           <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-            <div className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
-              m.role === 'user'
-                ? 'bg-primary-600 text-white'
-                : 'bg-gray-100 text-gray-800'
+            <div className={`max-w-[80%] px-4 py-3 text-sm leading-relaxed ${
+              m.role === 'user' ? 'bg-ink-900 text-white' : 'border border-ink-200 bg-ink-50 text-ink-800'
             }`}>
               <div className="whitespace-pre-wrap">
                 <ReactMarkdown>{m.text}</ReactMarkdown>
               </div>
               {m.sources?.length > 0 && (
-                <p className={`mt-2 border-t pt-2 text-xs ${m.role === 'user' ? 'border-white/30 text-primary-100' : 'border-gray-200 text-gray-400'}`}>
+                <p className={`mt-2 border-t pt-2 text-xs ${m.role === 'user' ? 'border-white/20 text-white/60' : 'border-ink-200 text-ink-400'}`}>
                   <i className="fa-solid fa-book mr-1" />참고: {m.sources.join(', ')}
                 </p>
               )}
@@ -60,7 +59,7 @@ export default function Chat() {
         ))}
         {loading && (
           <div className="flex justify-start">
-            <div className="rounded-2xl bg-gray-100 px-4 py-3 text-sm text-gray-500">
+            <div className="border border-ink-200 bg-ink-50 px-4 py-3 text-sm text-ink-500">
               <i className="fa-solid fa-ellipsis fa-beat-fade" />
             </div>
           </div>
@@ -71,7 +70,7 @@ export default function Chat() {
       <div className="mt-3 flex flex-wrap gap-2">
         {SUGGESTIONS.map((s) => (
           <button key={s} onClick={() => send(s)}
-            className="rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs text-gray-600 hover:border-primary-400 hover:text-primary-700">
+            className="border border-ink-200 bg-white px-3 py-1.5 text-xs text-ink-600 hover:border-forest-500 hover:text-forest-700">
             {s}
           </button>
         ))}
@@ -83,15 +82,10 @@ export default function Chat() {
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && send()}
           placeholder="병해충에 대해 질문하세요…"
-          className="flex-1 rounded-xl border border-gray-300 px-4 py-3 text-sm focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-100"
+          className="input !py-3"
         />
-        <button
-          onClick={() => send()}
-          disabled={loading}
-          className="rounded-xl bg-primary-600 px-5 text-white hover:bg-primary-700 disabled:opacity-50"
-          aria-label="전송"
-        >
-          <i className="fa-solid fa-paper-plane" />
+        <button onClick={() => send()} disabled={loading} className="btn-primary rounded-md px-5" aria-label="전송">
+          <i className="fa-solid fa-paper-plane text-sm" />
         </button>
       </div>
     </div>

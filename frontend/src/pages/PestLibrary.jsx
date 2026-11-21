@@ -4,13 +4,13 @@ import { api } from '../lib/api';
 import { EmptyState, SkeletonCard } from '../components/Skeleton';
 
 const TYPE_STYLE = {
-  병: 'bg-purple-100 text-purple-700',
-  충: 'bg-orange-100 text-orange-700',
+  병: 'bg-purple-50 text-purple-700',
+  충: 'bg-orange-50 text-orange-700',
   정상: 'bg-forest-100 text-forest-700',
 };
 
 export default function PestLibrary() {
-  const [params, setParams] = useSearchParams();
+  const [params] = useSearchParams();
   const [pests, setPests] = useState(null);
   const [crops, setCrops] = useState([]);
   const [type, setType] = useState('');
@@ -40,74 +40,72 @@ export default function PestLibrary() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-heading text-2xl font-bold text-forest-950">병해충 도감</h1>
-        <p className="mt-1 text-sm text-gray-500">병해충의 증상·원인·방제 정보를 검색하세요.</p>
+        <p className="eyebrow">Library</p>
+        <h1 className="page-title">병해충 도감</h1>
+        <p className="page-desc">병해충의 증상·원인·방제 정보를 검색하세요.</p>
       </div>
 
-      {/* 필터 */}
-      <div className="flex flex-wrap gap-3">
-        <div className="flex gap-1 rounded-full border border-forest-200 bg-white p-1">
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="flex border border-ink-200 bg-white">
           {['', '병', '충'].map((t) => (
             <button key={t} onClick={() => setType(t)}
-              className={`rounded-full px-4 py-1.5 text-sm ${type === t ? 'bg-forest-800 text-sprout-300' : 'text-forest-800/60 hover:bg-forest-50'}`}>
+              className={`px-4 py-2 text-[13px] ${type === t ? 'bg-ink-900 text-white' : 'text-ink-500 hover:text-ink-900'}`}>
               {t || '전체'}
             </button>
           ))}
         </div>
-        <select value={crop} onChange={(e) => setCrop(e.target.value)}
-          className="rounded-full border border-forest-200 bg-white px-4 py-1.5 text-sm">
+        <select value={crop} onChange={(e) => setCrop(e.target.value)} className="input !w-auto">
           <option value="">전체 작물</option>
           {crops.map((c) => <option key={c}>{c}</option>)}
         </select>
-        <div className="relative flex-1 min-w-40">
-          <i className="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-xs text-forest-400" />
+        <div className="relative min-w-40 flex-1">
+          <i className="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-xs text-ink-400" />
           <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="병해충명·증상 검색"
-            className="w-full rounded-full border border-forest-200 bg-white py-1.5 pl-9 pr-4 text-sm focus:border-forest-500 focus:outline-none" />
+            className="input !pl-8" />
         </div>
       </div>
 
-      {/* 목록 */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {pests === null && <><SkeletonCard /><SkeletonCard /><SkeletonCard /></>}
-        {pests?.length === 0 && <div className="sm:col-span-2 lg:col-span-3"><EmptyState title="검색 결과가 없습니다" /></div>}
-        {pests?.map((p, i) => (
+      <div className="grid gap-px border border-ink-200 bg-ink-200 sm:grid-cols-2 lg:grid-cols-3">
+        {pests === null && <div className="sm:col-span-2 lg:col-span-3 bg-white p-4"><SkeletonCard /></div>}
+        {pests?.length === 0 && <div className="sm:col-span-2 lg:col-span-3 bg-white p-4"><EmptyState title="검색 결과가 없습니다" /></div>}
+        {pests?.map((p) => (
           <button key={p.id} onClick={() => setSelected(p)}
-            className={`${i % 2 ? 'organic-card-alt' : 'organic-card'} border border-forest-200 bg-white p-5 text-left hover:border-forest-400 hover:shadow-md`}>
+            className="bg-white p-6 text-left transition-colors hover:bg-forest-50">
             <div className="flex items-center justify-between">
-              <span className="font-heading font-semibold text-forest-900">{p.name}</span>
-              <span className={`rounded-full px-2 py-0.5 text-xs ${TYPE_STYLE[p.type]}`}>{p.type}</span>
+              <span className="font-heading font-semibold text-ink-950">{p.name}</span>
+              <span className={`px-2 py-0.5 text-[11px] tracking-wide ${TYPE_STYLE[p.type]}`}>{p.type}</span>
             </div>
-            <p className="mt-2 line-clamp-2 text-sm text-gray-500">{p.symptoms}</p>
-            <p className="mt-3 text-xs text-forest-500">{p.crops.join(' · ')} · 발생기 {p.season}</p>
+            <p className="mt-3 line-clamp-2 text-[13px] leading-relaxed text-ink-500">{p.symptoms}</p>
+            <p className="mt-4 text-xs text-ink-400">{p.crops.join(' · ')} · 발생기 {p.season}</p>
           </button>
         ))}
       </div>
 
-      {/* 상세 모달 */}
       {selected && (
-        <div className="fade-in fixed inset-0 z-50 flex items-center justify-center bg-forest-950/50 p-4" onClick={() => setSelected(null)}>
-          <div className="organic-card max-h-[80vh] w-full max-w-lg overflow-y-auto bg-white p-6" onClick={(e) => e.stopPropagation()}>
+        <div className="fade-in fixed inset-0 z-50 flex items-center justify-center bg-ink-950/50 p-4" onClick={() => setSelected(null)}>
+          <div className="max-h-[80vh] w-full max-w-lg overflow-y-auto bg-white p-7" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-start justify-between">
               <div>
-                <h2 className="font-heading text-xl font-bold text-forest-900">{selected.name}</h2>
-                <span className={`mt-1 inline-block rounded-full px-2.5 py-0.5 text-xs ${TYPE_STYLE[selected.type]}`}>{selected.type}</span>
+                <p className="eyebrow">Pest Detail</p>
+                <h2 className="mt-1 font-heading text-xl font-bold text-ink-950">{selected.name}</h2>
+                <span className={`mt-1.5 inline-block px-2 py-0.5 text-[11px] ${TYPE_STYLE[selected.type]}`}>{selected.type}</span>
               </div>
-              <button onClick={() => setSelected(null)} className="p-1 text-gray-400 hover:text-forest-800">
-                <i className="fa-solid fa-xmark text-xl" />
+              <button onClick={() => setSelected(null)} className="p-1 text-ink-400 hover:text-ink-900">
+                <i className="fa-solid fa-xmark text-lg" />
               </button>
             </div>
-            <dl className="mt-5 space-y-4 text-sm">
+            <dl className="mt-6 divide-y divide-ink-100 border-t border-ink-200 text-sm">
               {[['주요 작물', selected.crops.join(', '), 'fa-seedling'],
                 ['증상', selected.symptoms, 'fa-eye'],
                 ['발생 원인', selected.cause, 'fa-circle-question'],
                 ['방제 방법', selected.control, 'fa-spray-can-sparkles'],
                 ['심각도', selected.severity, 'fa-gauge-high'],
                 ['주요 발생기', selected.season, 'fa-calendar-days']].map(([t, d, icon]) => (
-                <div key={t} className="flex gap-3">
-                  <i className={`fa-solid ${icon} mt-0.5 w-4 text-forest-500`} />
+                <div key={t} className="flex gap-4 py-3.5">
+                  <i className={`fa-solid ${icon} mt-0.5 w-4 text-forest-600`} />
                   <div>
-                    <dt className="font-semibold text-forest-900">{t}</dt>
-                    <dd className="mt-0.5 text-gray-600">{d}</dd>
+                    <dt className="text-[13px] font-semibold text-ink-900">{t}</dt>
+                    <dd className="mt-1 text-ink-600">{d}</dd>
                   </div>
                 </div>
               ))}

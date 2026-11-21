@@ -1,5 +1,3 @@
-# Netlify가 리포지토리 루트를 바라볼 때를 대비한 설정
-# (Netlify 사이트 Base directory가 frontend인 경우 frontend/netlify.toml이 적용됨)
 [build]
   base = "frontend"
   command = "npm run build"

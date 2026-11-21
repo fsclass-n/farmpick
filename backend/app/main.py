@@ -30,8 +30,4 @@ def root():
 
 @app.get("/health")
 def health():
-    return {
-        "status": "ok",
-        "mock_ai": settings.use_mock_ai,
-        "mock_db": settings.use_mock_db,
-    }
+    return {"status": "ok", "mock_ai": settings.use_mock_ai, "mock_db": settings.use_mock_db}

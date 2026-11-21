@@ -1,7 +1,4 @@
-"""농촌진흥청 병해충 발생정보 수집기 (골격)
-
-API 신청 후 service_key를 .env(RDA_API_KEY)에 등록해 사용.
-"""
+"""농촌진흥청 병해충 발생정보 수집기 (골격). API 키는 .env의 RDA_API_KEY."""
 
 import os
 

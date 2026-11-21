@@ -1,10 +1,4 @@
-"""데이터 수집기 베이스 클래스 (담당: 이오리)
-
-수집 소스:
-- AI Hub 농작물 병해충 이미지 데이터셋
-- 공공데이터포털 / 농촌진흥청 병해충 발생정보 API
-- 기상청 기상 데이터 API
-"""
+"""데이터 수집기 베이스 클래스 (담당: 이오리)"""
 
 from abc import ABC, abstractmethod
 from pathlib import Path

@@ -13,9 +13,9 @@ const GNB = [
 
 function Logo({ light }) {
   return (
-    <Link to="/" className={`flex items-center gap-2 font-heading text-xl font-bold ${light ? 'text-sprout-400' : 'text-forest-800'}`}>
-      <img src="/leaf.svg" alt="farmpick" className="h-7 w-7" />
-      farmpick
+    <Link to="/" className={`flex items-center gap-2 font-heading text-lg font-bold tracking-tight ${light ? 'text-white' : 'text-ink-900'}`}>
+      <img src="/leaf.svg" alt="farmpick" className="h-6 w-6" />
+      farmpick<span className="text-forest-500">.</span>
     </Link>
   );
 }
@@ -39,10 +39,10 @@ export default function MainLayout() {
   const isAdmin = user && ['admin', 'admin_readonly'].includes(user.role);
 
   const navCls = ({ isActive }) =>
-    `rounded-full px-4 py-2 text-sm font-medium transition-all ${
+    `relative px-1 py-1 text-[13px] font-medium tracking-wide transition-colors ${
       isActive
-        ? 'bg-forest-800 text-sprout-300'
-        : 'text-forest-800/70 hover:bg-forest-100 hover:text-forest-800'
+        ? 'text-ink-950 after:absolute after:inset-x-0 after:-bottom-[13px] after:h-[2px] after:bg-ink-950'
+        : 'text-ink-500 hover:text-ink-900'
     }`;
 
   const doSearch = (e) => {
@@ -57,126 +57,128 @@ export default function MainLayout() {
     <div className="flex min-h-screen flex-col bg-paper">
       {/* 발생 경보 마퀴 */}
       {alerts.length > 0 && (
-        <div className="overflow-hidden bg-forest-950 py-1.5 text-xs text-sprout-300">
-          <div className="marquee flex w-max gap-12 whitespace-nowrap px-4">
+        <div className="overflow-hidden bg-ink-950 py-1.5 text-[11px] tracking-wide text-white/70">
+          <div className="marquee flex w-max gap-14 whitespace-nowrap px-4">
             {[...alerts, ...alerts].map((a, i) => (
               <span key={i}>
-                <i className="fa-solid fa-triangle-exclamation mr-2 text-harvest" />
-                [{a.level}] {a.pest} — {a.region}: {a.note}
+                <span className="mr-2 font-semibold text-harvest">[{a.level}]</span>
+                {a.pest} — {a.region}: {a.note}
               </span>
             ))}
           </div>
         </div>
       )}
 
-      {/* 플로팅 글래스 헤더 */}
-      <header className="sticky top-3 z-40 mx-auto w-full max-w-[1280px] px-4">
-        <div className="glass flex h-16 items-center justify-between rounded-2xl px-4 shadow-sm">
+      {/* 글로벌 헤더 */}
+      <header className="sticky top-0 z-40 border-b border-ink-200 bg-paper/90 backdrop-blur">
+        <div className="mx-auto flex h-14 max-w-[1280px] items-center justify-between px-4">
           <Logo />
-          <nav className="hidden items-center gap-1 lg:flex">
+          <nav className="hidden items-center gap-7 lg:flex">
             {GNB.map((m) => (
               <NavLink key={m.to} to={m.to} className={navCls}>
                 {m.label}
               </NavLink>
             ))}
           </nav>
-          <div className="hidden items-center gap-2 lg:flex">
+          <div className="hidden items-center gap-1 lg:flex">
             <button
               onClick={() => setSearchOpen(!searchOpen)}
-              className="flex h-9 w-9 items-center justify-center rounded-full text-forest-800/60 hover:bg-forest-100 hover:text-forest-800"
+              className="flex h-9 w-9 items-center justify-center text-ink-500 hover:text-ink-900"
               aria-label="검색"
             >
-              <i className="fa-solid fa-magnifying-glass" />
+              <i className="fa-solid fa-magnifying-glass text-sm" />
             </button>
             {isAdmin && (
-              <Link to="/admin" className="rounded-full px-3 py-2 text-sm font-medium text-forest-800/70 hover:bg-forest-100">
-                <i className="fa-solid fa-gear mr-1" />관리자
+              <Link to="/admin" className="px-2 py-1 text-[13px] font-medium text-ink-500 hover:text-ink-900">
+                관리자
               </Link>
             )}
+            <span className="mx-2 h-4 w-px bg-ink-200" />
             {user ? (
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-forest-900">
+              <div className="flex items-center gap-3">
+                <span className="text-[13px] text-ink-700">
                   {user.name}
                   {user.role === 'admin_readonly' && (
-                    <span className="ml-1 rounded-full bg-harvest/20 px-2 py-0.5 text-xs text-amber-700">읽기 전용</span>
+                    <span className="ml-1.5 border border-harvest/40 px-1.5 py-0.5 text-[10px] font-medium tracking-wide text-harvest">
+                      READ ONLY
+                    </span>
                   )}
                 </span>
                 <button
                   onClick={() => { logout(); navigate('/'); }}
-                  className="rounded-full border border-forest-200 px-4 py-1.5 text-sm text-forest-800 hover:bg-forest-50"
+                  className="text-[13px] text-ink-500 underline-offset-4 hover:text-ink-900 hover:underline"
                 >
                   로그아웃
                 </button>
               </div>
             ) : (
-              <Link
-                to="/login"
-                className="rounded-full bg-forest-800 px-5 py-2 text-sm font-medium text-sprout-300 hover:bg-forest-700"
-              >
+              <Link to="/login" className="btn-primary rounded-md px-4 py-2 text-[13px]">
                 로그인
               </Link>
             )}
           </div>
           <button
-            className={`burger lg:hidden ${menuOpen ? 'open' : ''} p-2 text-forest-900`}
+            className={`burger lg:hidden ${menuOpen ? 'open' : ''} p-2 text-ink-900`}
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label="메뉴"
           >
             <span /><span /><span />
           </button>
         </div>
-        {/* 검색바 확장 */}
         {searchOpen && (
-          <form onSubmit={doSearch} className="fade-in glass mt-2 flex gap-2 rounded-2xl p-3">
-            <input
-              autoFocus
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="병해충 이름·증상을 검색하세요 (예: 흰가루, 잎 뒷면 흡즙)"
-              className="flex-1 rounded-xl border border-forest-200 bg-white px-4 py-2.5 text-sm focus:border-forest-500 focus:outline-none"
-            />
-            <button className="rounded-xl bg-forest-800 px-5 text-sm text-sprout-300">검색</button>
-          </form>
+          <div className="fade-in border-t border-ink-100 bg-white">
+            <form onSubmit={doSearch} className="mx-auto flex max-w-[1280px] gap-3 px-4 py-3">
+              <i className="fa-solid fa-magnifying-glass self-center text-sm text-ink-400" />
+              <input
+                autoFocus
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="병해충 이름·증상을 검색하세요 (예: 흰가루, 잎 뒷면 흡즙)"
+                className="flex-1 bg-transparent py-1.5 text-sm outline-none placeholder:text-ink-400"
+              />
+              <button className="text-[13px] font-medium text-forest-600 hover:text-forest-700">검색</button>
+            </form>
+          </div>
         )}
       </header>
 
       {/* 모바일 드로어 */}
       <div
-        className={`drawer fixed inset-y-0 right-0 z-50 w-72 bg-forest-950 text-white shadow-2xl lg:hidden ${
+        className={`drawer fixed inset-y-0 right-0 z-50 w-72 bg-ink-950 text-white shadow-2xl lg:hidden ${
           menuOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
         <div className="flex items-center justify-between border-b border-white/10 p-4">
           <Logo light />
           <button onClick={() => setMenuOpen(false)} aria-label="닫기" className="p-2">
-            <i className="fa-solid fa-xmark text-xl text-white/70" />
+            <i className="fa-solid fa-xmark text-lg text-white/70" />
           </button>
         </div>
-        <nav className="flex flex-col gap-1 p-4">
+        <nav className="flex flex-col gap-0.5 p-4">
           {GNB.map((m) => (
             <NavLink
               key={m.to}
               to={m.to}
               onClick={() => setMenuOpen(false)}
               className={({ isActive }) =>
-                `flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium ${
-                  isActive ? 'bg-sprout-500/15 text-sprout-300' : 'text-white/70 hover:bg-white/5'
+                `flex items-center gap-3 px-3 py-3 text-sm ${
+                  isActive ? 'text-white' : 'text-white/50 hover:text-white'
                 }`
               }
             >
-              <i className={`fa-solid ${m.icon} w-4`} />{m.label}
+              <i className={`fa-solid ${m.icon} w-4 text-xs`} />{m.label}
             </NavLink>
           ))}
           {isAdmin && (
-            <NavLink to="/admin" onClick={() => setMenuOpen(false)} className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-white/70 hover:bg-white/5">
-              <i className="fa-solid fa-gear w-4" />관리자
+            <NavLink to="/admin" onClick={() => setMenuOpen(false)} className="flex items-center gap-3 px-3 py-3 text-sm text-white/50 hover:text-white">
+              <i className="fa-solid fa-gear w-4 text-xs" />관리자
             </NavLink>
           )}
           <div className="mt-4 border-t border-white/10 pt-4">
             {user ? (
               <button
                 onClick={() => { logout(); setMenuOpen(false); navigate('/'); }}
-                className="w-full rounded-xl border border-white/20 px-3 py-2.5 text-sm text-white/80"
+                className="w-full border border-white/20 px-3 py-2.5 text-sm text-white/80"
               >
                 로그아웃 ({user.name})
               </button>
@@ -184,7 +186,7 @@ export default function MainLayout() {
               <Link
                 to="/login"
                 onClick={() => setMenuOpen(false)}
-                className="block rounded-xl bg-sprout-500 px-3 py-2.5 text-center text-sm font-bold text-forest-950"
+                className="block bg-white px-3 py-2.5 text-center text-sm font-semibold text-ink-950"
               >
                 로그인
               </Link>
@@ -193,80 +195,70 @@ export default function MainLayout() {
         </nav>
       </div>
       {menuOpen && (
-        <div className="fade-in fixed inset-0 z-40 bg-forest-950/40 lg:hidden" onClick={() => setMenuOpen(false)} />
+        <div className="fade-in fixed inset-0 z-40 bg-ink-950/40 lg:hidden" onClick={() => setMenuOpen(false)} />
       )}
 
-      {/* Content */}
-      <main className="mx-auto w-full max-w-[1280px] flex-1 px-4 py-8">
+      <main className="mx-auto w-full max-w-[1280px] flex-1 px-4 py-10">
         <Outlet />
       </main>
 
-      {/* Footer — 딥 포레스트 + 밭 이랑 */}
-      <footer className="furrows mt-8 bg-forest-950 text-white">
-        <div className="mx-auto grid max-w-[1280px] gap-8 px-4 py-12 md:grid-cols-4">
+      {/* Footer */}
+      <footer className="furrows mt-10 bg-ink-950 text-white">
+        <div className="mx-auto grid max-w-[1280px] gap-10 px-4 py-14 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
             <Logo light />
-            <p className="mt-3 text-sm leading-relaxed text-white/50">
+            <p className="mt-4 text-[13px] leading-relaxed text-white/40">
               AI로 진단하고, 데이터로 예방하는<br />스마트팜 병해충 관리 플랫폼
             </p>
-            <div className="mt-4 flex gap-2">
+            <div className="mt-5 flex gap-2">
               <a href="https://github.com/fsclass-n/farmpick" target="_blank" rel="noreferrer" aria-label="GitHub"
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white/70 hover:bg-sprout-500 hover:text-forest-950">
+                className="flex h-8 w-8 items-center justify-center border border-white/15 text-xs text-white/60 hover:border-white hover:text-white">
                 <i className="fa-brands fa-github" />
               </a>
               <a href="https://fsclass-n.github.io/farmpick/" target="_blank" rel="noreferrer" aria-label="프로젝트 안내"
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white/70 hover:bg-sprout-500 hover:text-forest-950">
+                className="flex h-8 w-8 items-center justify-center border border-white/15 text-xs text-white/60 hover:border-white hover:text-white">
                 <i className="fa-solid fa-globe" />
               </a>
             </div>
           </div>
-          <div>
-            <h4 className="mb-3 text-sm font-semibold text-sprout-300">팀 정보</h4>
-            <ul className="space-y-1.5 text-sm text-white/50">
-              <li>프로젝트 farmpick</li>
-              <li>이오리(조장) · 박미금 · 김모란 · 홍기흥</li>
-              <li>contact@farmpick.kr</li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="mb-3 text-sm font-semibold text-sprout-300">고객센터</h4>
-            <ul className="space-y-1.5 text-sm text-white/50">
-              <li><a href="#" className="hover:text-sprout-300">FAQ</a></li>
-              <li><a href="#" className="hover:text-sprout-300">1:1 문의</a></li>
-              <li><a href="#" className="hover:text-sprout-300">공지사항</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="mb-3 text-sm font-semibold text-sprout-300">정책·링크</h4>
-            <ul className="space-y-1.5 text-sm text-white/50">
-              <li><a href="#" className="hover:text-sprout-300">이용약관 · 개인정보처리방침</a></li>
-              <li className="text-xs leading-relaxed">데이터 출처: AI Hub, 공공데이터포털, 농촌진흥청, 기상청</li>
-            </ul>
-          </div>
+          {[
+            ['팀 정보', ['프로젝트 farmpick', '이오리(조장) · 박미금 · 김모란 · 홍기흥', 'contact@farmpick.kr']],
+            ['고객센터', ['FAQ', '1:1 문의', '공지사항']],
+            ['정책·링크', ['이용약관', '개인정보처리방침']],
+          ].map(([title, items]) => (
+            <div key={title}>
+              <h4 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/40">{title}</h4>
+              <ul className="space-y-2 text-[13px] text-white/60">
+                {items.map((it) => (
+                  <li key={it}><a href="#" className="hover:text-white">{it}</a></li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
-        <div className="border-t border-white/10 py-4 text-center text-xs text-white/30">
-          © 2026 farmpick. All rights reserved.
+        <div className="border-t border-white/10 py-5 text-center text-[11px] tracking-wide text-white/30">
+          데이터 출처: AI Hub · 공공데이터포털 · 농촌진흥청 · 기상청 &nbsp;|&nbsp; © 2026 farmpick. All rights reserved.
         </div>
       </footer>
 
-      {/* AI 상담 플로팅 버튼 */}
+      {/* AI 상담 플로팅 */}
       <Link
         to="/chat"
-        className="fixed bottom-20 right-6 z-30 flex h-12 w-12 items-center justify-center rounded-full bg-sprout-500 text-forest-950 shadow-lg shadow-sprout-500/30 hover:bg-sprout-400"
+        className="fixed bottom-20 right-6 z-30 flex h-11 w-11 items-center justify-center rounded-full bg-forest-600 text-white shadow-lg hover:bg-forest-700"
         aria-label="AI 상담"
       >
-        <i className="fa-solid fa-robot" />
+        <i className="fa-solid fa-robot text-sm" />
       </Link>
 
       {/* To the Top */}
       <button
         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         aria-label="최상단 이동"
-        className={`fixed bottom-6 right-6 z-30 flex h-12 w-12 items-center justify-center rounded-full bg-forest-800 text-sprout-300 shadow-lg transition-opacity duration-300 hover:bg-forest-700 ${
+        className={`fixed bottom-6 right-6 z-30 flex h-11 w-11 items-center justify-center rounded-full bg-ink-900 text-white shadow-lg transition-opacity duration-300 hover:bg-ink-700 ${
           showTop ? 'opacity-100' : 'pointer-events-none opacity-0'
         }`}
       >
-        <i className="fa-solid fa-arrow-up" />
+        <i className="fa-solid fa-arrow-up text-sm" />
       </button>
     </div>
   );

@@ -1,7 +1,4 @@
-"""Gemini Vision 연동 서비스.
-
-GEMINI_API_KEY 미설정 시 Mock 결과를 반환해 데모가 동작하도록 한다.
-"""
+"""Gemini Vision 연동 서비스. GEMINI_API_KEY 미설정 시 Mock 결과 반환."""
 
 import json
 import random
@@ -32,10 +29,7 @@ async def diagnose_image(data: bytes, crop: str, filename: str) -> dict:
         genai.configure(api_key=settings.GEMINI_API_KEY)
         model = genai.GenerativeModel(settings.GEMINI_MODEL)
         resp = model.generate_content(
-            [
-                DIAGNOSIS_PROMPT.format(crop=crop),
-                {"mime_type": "image/jpeg", "data": data},
-            ]
+            [DIAGNOSIS_PROMPT.format(crop=crop), {"mime_type": "image/jpeg", "data": data}]
         )
         text = resp.text.strip().removeprefix("```json").removesuffix("```").strip()
         return json.loads(text)
@@ -50,21 +44,15 @@ def _mock_diagnosis(crop: str) -> dict:
         [p["name"] for p in PESTS if p["name"] != pest["name"] and p["type"] != "정상"], k=2
     )
     return {
-        "mock": True,
-        "pest": pest["name"],
-        "type": pest["type"],
+        "mock": True, "pest": pest["name"], "type": pest["type"],
         "confidence": round(random.uniform(0.72, 0.97), 2),
-        "symptoms": pest["symptoms"],
-        "cause": pest["cause"],
-        "control": pest["control"],
-        "severity": pest["severity"],
-        "similar_cases": similar,
+        "symptoms": pest["symptoms"], "cause": pest["cause"], "control": pest["control"],
+        "severity": pest["severity"], "similar_cases": similar,
         "caution": "본 결과는 Mock 데모 진단입니다. GEMINI_API_KEY 설정 시 실제 AI 진단으로 동작합니다.",
     }
 
 
 async def chat(message: str, pests: list[dict]) -> tuple[str, list[str]]:
-    """AI 상담. Gemini 사용 가능 시 실제 응답, 아니면 규칙 기반 Mock."""
     if not settings.use_mock_ai:
         try:
             import google.generativeai as genai
@@ -72,15 +60,12 @@ async def chat(message: str, pests: list[dict]) -> tuple[str, list[str]]:
             genai.configure(api_key=settings.GEMINI_API_KEY)
             model = genai.GenerativeModel(settings.GEMINI_MODEL)
             context = "\n".join(
-                f"- {p['name']}({p['type']}): {p['symptoms']} / 방제: {p['control']}"
-                for p in pests
+                f"- {p['name']}({p['type']}): {p['symptoms']} / 방제: {p['control']}" for p in pests
             )
-            prompt = (
+            resp = model.generate_content(
                 "당신은 farmpick의 병해충 상담 AI입니다. 아래 병해충 DB를 근거로 답변하세요.\n"
-                + context
-                + f"\n\n질문: {message}"
+                + context + f"\n\n질문: {message}"
             )
-            resp = model.generate_content(prompt)
             return resp.text.strip(), _match_sources(message, pests)
         except Exception:
             pass
@@ -90,10 +75,8 @@ async def chat(message: str, pests: list[dict]) -> tuple[str, list[str]]:
         pest = next(p for p in pests if p["name"] == matched[0])
         reply = (
             f"**{pest['name']}** ({pest['type']}, 심각도: {pest['severity']})\n\n"
-            f"- 증상: {pest['symptoms']}\n"
-            f"- 발생 원인: {pest['cause']}\n"
-            f"- 방제 방법: {pest['control']}\n"
-            f"- 주요 발생기: {pest['season']}\n\n"
+            f"- 증상: {pest['symptoms']}\n- 발생 원인: {pest['cause']}\n"
+            f"- 방제 방법: {pest['control']}\n- 주요 발생기: {pest['season']}\n\n"
             "※ 데모 응답입니다. 정확한 진단은 'AI 병해충 진단'에서 사진을 업로드해 주세요."
         )
     else:

@@ -23,11 +23,8 @@ class FarmCreate(BaseModel):
 def create_farm(body: FarmCreate, user: dict = Depends(get_current_user)):
     farm = {
         "id": max([f["id"] for f in FARMS], default=0) + 1,
-        "name": body.name,
-        "crop": body.crop,
-        "area": body.area,
-        "location": body.location,
-        "records": [],
+        "name": body.name, "crop": body.crop,
+        "area": body.area, "location": body.location, "records": [],
     }
     FARMS.append(farm)
     return farm

@@ -17,12 +17,7 @@ class LoginRequest(BaseModel):
 
 
 def _public_user(u: dict) -> dict:
-    return {
-        "email": u["email"],
-        "name": u["name"],
-        "role": u["role"],
-        "role_label": u["role_label"],
-    }
+    return {"email": u["email"], "name": u["name"], "role": u["role"], "role_label": u["role_label"]}
 
 
 @router.get("/test-accounts")
@@ -38,10 +33,7 @@ def login(body: LoginRequest):
     user = next((u for u in TEST_ACCOUNTS if u["email"] == body.email), None)
     if user is None:
         raise HTTPException(401, "이메일 또는 비밀번호가 올바르지 않습니다.")
-    if user["password_hash"] == "demo":
-        ok = body.password == user["password"]
-    else:
-        ok = verify_password(body.password, user["password_hash"])
+    ok = body.password == user["password"] if user["password_hash"] == "demo" else verify_password(body.password, user["password_hash"])
     if not ok:
         raise HTTPException(401, "이메일 또는 비밀번호가 올바르지 않습니다.")
     return {"access_token": create_access_token(user), "user": _public_user(user)}
@@ -60,12 +52,8 @@ def register(body: RegisterRequest):
     if any(u["email"] == body.email for u in TEST_ACCOUNTS):
         raise HTTPException(409, "이미 가입된 이메일입니다.")
     user = {
-        "email": body.email,
-        "password_hash": "demo",
-        "password": body.password,
-        "name": body.name,
-        "role": "farmer",
-        "role_label": "농가(재배자)",
+        "email": body.email, "password_hash": "demo", "password": body.password,
+        "name": body.name, "role": "farmer", "role_label": "농가(재배자)",
     }
     TEST_ACCOUNTS.append(user)
     return {"access_token": create_access_token(user), "user": _public_user(user)}

@@ -1,7 +1,4 @@
-"""SQLAlchemy 모델 — TiDB/MySQL 연동 시 사용.
-
-DATABASE_URL 미설정 시 mock_data로 동작하며, 설정 시 아래 테이블에 매핑된다.
-"""
+"""SQLAlchemy 모델 — TiDB/MySQL 연동 시 사용."""
 
 from datetime import datetime
 
@@ -15,19 +12,16 @@ class Base(DeclarativeBase):
 
 class User(Base):
     __tablename__ = "users"
-
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     email: Mapped[str] = mapped_column(String(255), unique=True, index=True)
     name: Mapped[str] = mapped_column(String(100))
     password_hash: Mapped[str] = mapped_column(String(255))
-    # farmer / company / admin / admin_readonly
-    role: Mapped[str] = mapped_column(String(30), default="farmer")
+    role: Mapped[str] = mapped_column(String(30), default="farmer")  # farmer/company/admin/admin_readonly
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 
 
 class Pest(Base):
     __tablename__ = "pests"
-
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(100), index=True)
     type: Mapped[str] = mapped_column(String(10))  # 병/충/정상
@@ -41,7 +35,6 @@ class Pest(Base):
 
 class Farm(Base):
     __tablename__ = "farms"
-
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     name: Mapped[str] = mapped_column(String(100))
@@ -52,7 +45,6 @@ class Farm(Base):
 
 class DiagnosisRecord(Base):
     __tablename__ = "diagnosis_records"
-
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     farm_id: Mapped[int] = mapped_column(ForeignKey("farms.id"))
     image_path: Mapped[str] = mapped_column(String(500), default="")
@@ -65,7 +57,6 @@ class DiagnosisRecord(Base):
 
 class OccurrenceStat(Base):
     __tablename__ = "occurrence_stats"
-
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     region: Mapped[str] = mapped_column(String(50))
     crop: Mapped[str] = mapped_column(String(50))
@@ -76,7 +67,6 @@ class OccurrenceStat(Base):
 
 class CompanyDemand(Base):
     __tablename__ = "company_demands"
-
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     company: Mapped[str] = mapped_column(String(100))
     crops: Mapped[list] = mapped_column(JSON)

@@ -13,14 +13,11 @@ def _load_pests() -> list[dict]:
             return PESTS
         from ..models import Pest
 
-        rows = session.query(Pest).all()
         return [
-            {
-                "id": p.id, "name": p.name, "type": p.type, "crops": p.crops,
-                "symptoms": p.symptoms, "cause": p.cause, "control": p.control,
-                "severity": p.severity, "season": p.season,
-            }
-            for p in rows
+            {"id": p.id, "name": p.name, "type": p.type, "crops": p.crops,
+             "symptoms": p.symptoms, "cause": p.cause, "control": p.control,
+             "severity": p.severity, "season": p.season}
+            for p in session.query(Pest).all()
         ]
 
 

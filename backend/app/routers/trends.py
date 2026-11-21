@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 
 from ..mock_data import COMPANY_DEMANDS, PEST_ALERTS, REGION_OCCURRENCE, TREND_MONTHLY, WEATHER_CORRELATION
-from ..security import get_current_user, require_roles
+from ..security import get_current_user
 
 router = APIRouter(prefix="/api/trends", tags=["trends"])
 

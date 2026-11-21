@@ -1,6 +1,5 @@
 # Render Blueprint — https://farmpick.onrender.com + https://farmpick-api.onrender.com
 services:
-  # 백엔드 API — https://farmpick-api.onrender.com
   - type: web
     name: farmpick-api
     runtime: python
@@ -16,17 +15,15 @@ services:
       - key: CORS_ORIGINS
         value: https://farmpick.netlify.app,https://farmpick.onrender.com
       - key: GEMINI_API_KEY
-        sync: false        # Render 대시보드에서 직접 입력
-      - key: DATABASE_URL  # mysql+pymysql://...@gateway...tidbcloud.com:4000/farmpick
+        sync: false
+      - key: DATABASE_URL
         sync: false
 
-  # 프런트엔드 Static Site — https://farmpick.onrender.com
   - type: static
     name: farmpick
     rootDir: frontend
     buildCommand: "npm ci && npm run build"
     staticPublishPath: dist
-    pullRequestPreviewsEnabled: false
     routes:
       - type: rewrite
         source: /*

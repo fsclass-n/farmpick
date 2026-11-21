@@ -1,9 +1,4 @@
-"""TiDB/MySQL 연결 레이어.
-
-DATABASE_URL(예: mysql+pymysql://user:pass@host:4000/farmpick?ssl_verify_cert=true)
-설정 시 실제 DB 세션을 제공하고, 미설정 시 None을 반환해 라우터가
-mock_data를 사용하도록 한다.
-"""
+"""TiDB/MySQL 연결 레이어. DATABASE_URL 미설정 시 mock 데이터 폴백."""
 
 from contextlib import contextmanager
 
@@ -26,7 +21,6 @@ def db_enabled() -> bool:
 
 @contextmanager
 def get_session():
-    """DB 미설정 시 None을 yield — 라우터에서 mock 폴백 처리."""
     if _SessionLocal is None:
         yield None
         return
@@ -42,7 +36,6 @@ def get_session():
 
 
 def init_db():
-    """테이블 생성 (최초 배포 시 1회 실행)"""
     if _engine is None:
         raise RuntimeError("DATABASE_URL이 설정되지 않았습니다.")
     from . import models

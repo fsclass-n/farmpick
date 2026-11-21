@@ -32,7 +32,6 @@ jobs:
           npm ci
           npm run build
 
-  # 변경 영역 감지 (push 시점 diff, 첫 푸시/PR 대응)
   changes:
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
@@ -49,12 +48,10 @@ jobs:
           if [ -z "$BASE" ] || [ "$BASE" = "0000000000000000000000000000000000000000" ]; then
             BASE="HEAD~1"
           fi
-          echo "base=$BASE"
           CHANGED=$(git diff --name-only "$BASE" HEAD || git diff --name-only HEAD~1 HEAD)
           echo "$CHANGED" | grep -q '^frontend/' && echo "frontend=true" >> "$GITHUB_OUTPUT" || echo "frontend=false" >> "$GITHUB_OUTPUT"
           echo "$CHANGED" | grep -qE '^(backend|pipeline|requirements.txt)' && echo "backend=true" >> "$GITHUB_OUTPUT" || echo "backend=false" >> "$GITHUB_OUTPUT"
 
-  # frontend/ 변경 → Netlify 데모 + Render Static Site 배포 훅
   deploy-frontend:
     needs: [frontend-build, changes]
     if: needs.changes.outputs.frontend == 'true'
@@ -71,7 +68,6 @@ jobs:
           HOOK: ${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK }}
         run: curl -fsSL -X POST "$HOOK"
 
-  # backend/, pipeline/ 변경 → Render API 배포 훅
   deploy-backend:
     needs: [backend-check, changes]
     if: needs.changes.outputs.backend == 'true'

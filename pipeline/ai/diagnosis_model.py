@@ -1,8 +1,4 @@
-"""AI 진단 파이프라인 (담당: 홍기흥)
-
-- Gemini Vision으로 생육 이미지 병해충 진단
-- (선택) 국산 K-AI 모델(EXAONE, Solar 등) 비교 실험 훅
-"""
+"""AI 진단 파이프라인 (담당: 홍기흥)"""
 
 from pipeline.ai.prompts import DIAGNOSIS_PROMPT
 
