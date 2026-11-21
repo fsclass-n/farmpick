@@ -17,6 +17,12 @@ export default function PestLibrary() {
   const [crop, setCrop] = useState('');
   const [q, setQ] = useState(params.get('q') || '');
   const [selected, setSelected] = useState(null);
+  const similar = selected
+    ? (pests || []).filter(
+        (p) => p.id !== selected.id && p.type === selected.type
+          && p.crops.some((c) => selected.crops.includes(c))
+      ).slice(0, 2)
+    : [];
 
   useEffect(() => {
     api('/api/pests/crops').then(setCrops).catch(() => {});
@@ -110,6 +116,47 @@ export default function PestLibrary() {
                 </div>
               ))}
             </dl>
+
+            {/* 방제 가이드 4단계 */}
+            <div className="mt-6">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-ink-400">방제 가이드</p>
+              <div className="mt-3 grid grid-cols-4 divide-x divide-ink-200 border border-ink-200 bg-ink-50 text-center">
+                {[
+                  ['1', '예방', '품종·환경 관리'],
+                  ['2', '예찰', '정기 순찰·관찰'],
+                  ['3', '방제', '적기 약제 살포'],
+                  ['4', '사후', '병원 제거·기록'],
+                ].map(([no, t, d]) => (
+                  <div key={t} className="px-2 py-3">
+                    <p className="text-[10px] font-bold tracking-widest text-forest-500">STEP {no}</p>
+                    <p className="mt-1 text-[13px] font-semibold text-ink-900">{t}</p>
+                    <p className="mt-0.5 text-[11px] text-ink-400">{d}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* 유사 병해충 증상 비교 */}
+            {similar.length > 0 && (
+              <div className="mt-6">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-ink-400">
+                  혼동 주의 — 유사 병해충 증상 비교
+                </p>
+                <div className="mt-3 divide-y divide-ink-100 border border-ink-200">
+                  {[selected, ...similar].map((p, i) => (
+                    <div key={p.id} className={`flex gap-3 px-4 py-3 ${i === 0 ? 'bg-forest-50' : ''}`}>
+                      <span className={`mt-0.5 shrink-0 px-2 py-0.5 text-[10px] tracking-wide ${TYPE_STYLE[p.type]}`}>
+                        {i === 0 ? '현재' : '유사'}
+                      </span>
+                      <div className="min-w-0">
+                        <p className="text-[13px] font-semibold text-ink-900">{p.name}</p>
+                        <p className="mt-0.5 line-clamp-2 text-xs leading-relaxed text-ink-500">{p.symptoms}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}

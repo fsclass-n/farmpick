@@ -7,6 +7,7 @@ const STEPS = ['이미지 업로드', 'AI 분석 중', '결과 생성'];
 export default function Diagnosis() {
   const { user } = useAuth();
   const [crops, setCrops] = useState([]);
+  const [allPests, setAllPests] = useState([]);
   const [crop, setCrop] = useState('토마토');
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -17,6 +18,7 @@ export default function Diagnosis() {
 
   useEffect(() => {
     api('/api/pests/crops').then(setCrops).catch(() => {});
+    api('/api/pests/').then(setAllPests).catch(() => {});
   }, []);
 
   const pick = (e) => {
@@ -169,8 +171,34 @@ export default function Diagnosis() {
               ))}
             </dl>
 
+            {/* 혼동 주의 — 유사 병해충 증상 비교 */}
             {result.similar_cases?.length > 0 && (
-              <p className="mt-2 text-xs text-ink-400">유사 사례: {result.similar_cases.join(' · ')}</p>
+              <div className="mt-5">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-ink-400">
+                  혼동 주의 — 유사 병해충 증상 비교
+                </p>
+                <div className="mt-2 divide-y divide-ink-100 border border-ink-200">
+                  <div className="flex gap-3 bg-forest-50 px-4 py-3">
+                    <span className="mt-0.5 shrink-0 bg-forest-100 px-2 py-0.5 text-[10px] tracking-wide text-forest-700">진단</span>
+                    <div className="min-w-0">
+                      <p className="text-[13px] font-semibold text-ink-900">{result.pest}</p>
+                      <p className="mt-0.5 line-clamp-2 text-xs leading-relaxed text-ink-500">{result.symptoms}</p>
+                    </div>
+                  </div>
+                  {result.similar_cases.map((name) => {
+                    const sp = allPests.find((p) => p.name === name);
+                    return (
+                      <div key={name} className="flex gap-3 px-4 py-3">
+                        <span className="mt-0.5 shrink-0 bg-ink-100 px-2 py-0.5 text-[10px] tracking-wide text-ink-500">유사</span>
+                        <div className="min-w-0">
+                          <p className="text-[13px] font-semibold text-ink-900">{name}</p>
+                          {sp && <p className="mt-0.5 line-clamp-2 text-xs leading-relaxed text-ink-500">{sp.symptoms}</p>}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             )}
             <p className="mt-4 border border-harvest/30 bg-harvest/5 px-3 py-2.5 text-xs text-harvest">
               <i className="fa-solid fa-triangle-exclamation mr-1" />{result.caution}
