@@ -4,6 +4,7 @@
   --font-heading: "IBM Plex Sans KR", sans-serif;
   --font-body: "Noto Sans KR", sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --font-serif: "Noto Serif KR", "IBM Plex Sans KR", serif;
 
   /* 소일(토양) 잉크 — 따뜻한 흙빛 무채색 */
   --color-ink-50: #f7f4ec;
@@ -58,16 +59,28 @@ body {
 
 /* ---------- 페이지 헤더 표준 ---------- */
 .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--color-forest-600);
 }
+.eyebrow::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  background: var(--color-forest-500);
+  border-radius: 10px 0;
+}
 .page-title {
-  font-family: var(--font-heading);
-  font-size: 1.5rem;
+  font-family: var(--font-serif);
+  font-size: clamp(1.75rem, 2.6vw, 2.25rem);
   font-weight: 700;
+  letter-spacing: -0.03em;
   color: var(--color-ink-950);
   margin-top: 0.375rem;
 }
@@ -241,7 +254,7 @@ body {
   position: relative;
   background: var(--color-sheet);
   border: 1px solid var(--color-ink-200);
-  border-radius: 14px;
+  border-radius: 22px 6px 22px 6px;
   box-shadow: 0 1px 0 rgba(17, 16, 13, 0.04);
   transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
 }
@@ -324,3 +337,92 @@ body {
   width: 2px;
   background: repeating-linear-gradient(var(--color-forest-300) 0 6px, transparent 6px 12px);
 }
+
+/* =========================================================
+   v3 — Almanac × Leaf 시그니처
+   ========================================================= */
+.font-serif { font-family: var(--font-serif); }
+.leaf-r { border-radius: 28px 6px 28px 6px; }
+.leaf-r-lg { border-radius: 64px 10px 64px 10px; }
+.leaf-r-xl { border-radius: 180px 18px 180px 18px; }
+.btn-leaf { border-radius: 16px 4px 16px 4px; }
+
+/* 이랑(furrow) 구분선 */
+.furrow-edge {
+  height: 28px;
+  background:
+    radial-gradient(18px 14px at 50% 100%, var(--color-ink-950) 98%, transparent) 0 0 / 36px 28px repeat-x;
+}
+
+/* AI 객체 탐지 바운딩 박스 */
+.bbox {
+  position: absolute;
+  border: 2px solid var(--color-chloro);
+  border-radius: 6px;
+  box-shadow: 0 0 0 9999px transparent, 0 0 18px rgba(198, 224, 79, 0.35);
+  animation: bboxIn 0.6s ease-out both, bboxPulse 2.8s ease-in-out 0.6s infinite;
+}
+.bbox.warn { border-color: #ff9f43; box-shadow: 0 0 18px rgba(255, 159, 67, 0.45); }
+.bbox::before, .bbox::after {
+  content: "";
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border: 3px solid currentColor;
+}
+.bbox > .bbox-label {
+  position: absolute;
+  left: -2px;
+  top: -26px;
+  white-space: nowrap;
+  border-radius: 5px 5px 5px 0;
+  background: var(--color-chloro);
+  padding: 3px 8px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--color-ink-950);
+}
+.bbox.warn > .bbox-label { background: #ff9f43; }
+@keyframes bboxIn { from { opacity: 0; transform: scale(1.15); } to { opacity: 1; transform: scale(1); } }
+@keyframes bboxPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.65; } }
+
+.scan-beam {
+  position: absolute;
+  inset-inline: 0;
+  height: 30%;
+  background: linear-gradient(180deg, transparent, rgba(198, 224, 79, 0.18) 85%, rgba(198, 224, 79, 0.7));
+  border-bottom: 1.5px solid var(--color-chloro);
+  animation: beam 3.6s cubic-bezier(.6,0,.4,1) infinite;
+}
+@keyframes beam { 0% { top: -30%; } 100% { top: 100%; } }
+
+/* 원형 To-Top: 물 차오름 */
+.water {
+  position: absolute;
+  inset-inline: -25%;
+  bottom: 0;
+  background: var(--color-forest-500);
+  transition: height 0.2s linear;
+}
+.water::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: -6px;
+  width: 200%;
+  height: 12px;
+  background: radial-gradient(10px 6px at 10px 6px, var(--color-forest-500) 98%, transparent) 0 0 / 20px 12px repeat-x;
+  animation: wave 1.6s linear infinite;
+}
+@keyframes wave { to { transform: translateX(-20px); } }
+
+/* 위험지수 게이지 */
+.gauge i { display: block; width: 5px; height: 12px; border-radius: 2px; background: var(--color-ink-200); }
+
+/* 헤더 활성 새싹 인디케이터 */
+.sprout { transform-origin: bottom center; animation: sprout 0.45s cubic-bezier(.3,1.6,.5,1) both; }
+@keyframes sprout { from { transform: scaleY(0); opacity: 0; } to { transform: scaleY(1); opacity: 1; } }
+
+/* 모바일 하단 탭바 높이만큼 여백 */
+@media (max-width: 1023px) { .pb-tabbar { padding-bottom: 84px; } }

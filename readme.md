@@ -50,3 +50,7 @@ cd frontend && npm install && npm run dev                      # http://localhos
 
 - 관리자 계정은 비밀번호 로그인이 불가하며 보안 키(상수 시간 비교)로만 인증됩니다.
 - 읽기 전용 차단은 2중으로 적용됩니다: 프런트 `api()` 레이어(1차) + 백엔드 전역 미들웨어 `readonly_guard`(2차, 모든 POST/PUT/PATCH/DELETE).
+
+## 이미지 출처
+`frontend/public/images/*.webp` 는 [Unsplash License](https://unsplash.com/license)(상업적 이용 가능, 출처 표기 권장) 무료 이미지를 WebP로 최적화해 저장한 것입니다.
+작가 정보는 `frontend/src/lib/photos.js` 에 정리되어 있으며 푸터의 *Photos from Unsplash* 에서 확인할 수 있습니다.

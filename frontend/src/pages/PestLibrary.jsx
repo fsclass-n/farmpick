@@ -71,12 +71,12 @@ export default function PestLibrary() {
         </div>
       </div>
 
-      <div className="grid gap-px border border-ink-200 bg-ink-200 sm:grid-cols-2 lg:grid-cols-3">
-        {pests === null && <div className="sm:col-span-2 lg:col-span-3 bg-white p-4"><SkeletonCard /></div>}
-        {pests?.length === 0 && <div className="sm:col-span-2 lg:col-span-3 bg-white p-4"><EmptyState title="검색 결과가 없습니다" /></div>}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {pests === null && <div className="sm:col-span-2 lg:col-span-3"><SkeletonCard /></div>}
+        {pests?.length === 0 && <div className="sm:col-span-2 lg:col-span-3"><EmptyState title="검색 결과가 없습니다" /></div>}
         {pests?.map((p) => (
           <button key={p.id} onClick={() => setSelected(p)}
-            className="bg-white p-6 text-left transition-colors hover:bg-forest-50">
+            className="specimen p-6 text-left hover:bg-forest-50">
             <div className="flex items-center justify-between">
               <span className="font-heading font-semibold text-ink-950">{p.name}</span>
               <span className={`px-2 py-0.5 text-[11px] tracking-wide ${TYPE_STYLE[p.type]}`}>{p.type}</span>
