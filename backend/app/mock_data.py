@@ -3,8 +3,9 @@
 TEST_ACCOUNTS = [
     {"email": "farmer@farmpick.kr", "password_hash": "demo", "password": "Farm1234!", "name": "김농부", "role": "farmer", "role_label": "농가(재배자)"},
     {"email": "company@farmpick.kr", "password_hash": "demo", "password": "Corp1234!", "name": "이기업", "role": "company", "role_label": "기업 담당자"},
-    {"email": "admin@farmpick.kr", "password_hash": "demo", "password": "Admin1234!", "name": "관리자", "role": "admin", "role_label": "관리자"},
-    {"email": "viewer@farmpick.kr", "password_hash": "demo", "password": "View1234!", "name": "테스트 관리자", "role": "admin_readonly", "role_label": "테스트 관리자(읽기 전용)"},
+    # 실제 관리자: 비밀번호 로그인 불가, .env 의 ADMIN_SECRET_KEY 로만 진입
+    {"email": "admin@farmpick.kr", "password_hash": "key-only", "password": None, "name": "관리자", "role": "admin", "role_label": "관리자", "hidden": True},
+    {"email": "viewer@farmpick.kr", "password_hash": "demo", "password": "View1234!", "name": "테스트 관리자", "role": "admin_readonly", "role_label": "테스트 관리자(읽기 전용)", "hidden": True},
 ]
 
 CROPS = ["토마토", "딸기", "오이", "고추", "상추", "감자", "사과", "배"]
@@ -117,4 +118,13 @@ ADMIN_STATS = {
 COMPANY_DEMANDS = [
     {"id": 1, "company": "(주)그린아그로", "crops": ["딸기", "토마토"], "regions": ["전남", "충남"], "interest": "병해충 발생 동향 리포트", "status": "구조화 완료"},
     {"id": 2, "company": "팜케어", "crops": ["고추"], "regions": ["경북"], "interest": "탄저병 조기 경보 알림", "status": "분석 대기"},
+]
+
+CONTROL_MANUALS = [
+    {"id": 1, "title": "시설 딸기 잿빛곰팡이병 저온다습기 관리", "pest": "잿빛곰팡이병", "crop": "딸기", "stage": "예방",
+     "steps": ["야간 최저 8℃ 이상 보온", "일출 직후 30분 환기로 결로 제거", "병든 과실·잎 즉시 제거 후 밀봉 폐기", "펜헥사미드 계열 7일 간격 2회 살포"]},
+    {"id": 2, "title": "고추 탄저병 장마철 방제 체계", "pest": "탄저병", "crop": "고추", "stage": "치료",
+     "steps": ["비가림 재배·멀칭으로 빗물 튐 차단", "강우 전 예방 살포", "발병과 즉시 제거", "디페노코나졸 계열 교호 살포(저항성 방지)"]},
+    {"id": 3, "title": "오이 총채벌레 종합관리(IPM)", "pest": "총채벌레", "crop": "오이", "stage": "예찰",
+     "steps": ["청색 끈끈이 트랩 10a당 20매 설치", "주 1회 트랩 밀도 기록", "미끌애꽃노린재 천적 방사", "밀도 초과 시 스피네토람 계열 살포"]},
 ]

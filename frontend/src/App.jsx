@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
 import AuthLayout from './layouts/AuthLayout';
 import MainLayout from './layouts/MainLayout';
@@ -23,6 +23,8 @@ export default function App() {
 
       <Route element={<MainLayout />}>
         <Route index element={<Home />} />
+        <Route path="/home" element={<Navigate to="/" replace />} />
+        <Route path="/main" element={<Navigate to="/" replace />} />
         <Route path="/trends" element={<Trends />} />
         <Route path="/pests" element={<PestLibrary />} />
 

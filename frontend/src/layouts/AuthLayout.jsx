@@ -4,14 +4,14 @@ export default function AuthLayout() {
   return (
     <div className="flex min-h-screen">
       {/* 좌측 에디토리얼 패널 */}
-      <div className="furrows hidden flex-1 flex-col justify-between bg-ink-950 p-12 text-white lg:flex">
+      <div className="grid-paper-dark hidden flex-1 flex-col justify-between bg-forest-950 p-12 text-white lg:flex">
         <div className="flex items-center gap-2 font-heading text-xl font-bold tracking-tight">
-          <img src="/leaf.svg" alt="" className="h-8 w-8" />
-          farmpick<span className="text-forest-400">.</span>
+          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-forest-600"><i className="fa-solid fa-leaf text-sm" /></span>
+          farmpick<span className="text-chloro">.</span>
         </div>
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-forest-300">
-            AI Crop Pest Diagnosis
+          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-chloro">
+            Field Specimen Lab · AI Crop Pest Diagnosis
           </p>
           <h1 className="mt-5 font-heading text-[44px] font-bold leading-[1.2] tracking-tight">
             사진 한 장으로<br />병해충을 진단하고<br />수확을 지키세요
@@ -27,7 +27,7 @@ export default function AuthLayout() {
               ['AI 상담', 'fa-robot'],
             ].map(([label, icon]) => (
               <div key={label} className="px-4 first:pl-0">
-                <i className={`fa-solid ${icon} text-forest-400`} />
+                <i className={`fa-solid ${icon} text-chloro`} />
                 <p className="mt-2 text-xs tracking-wide text-white/60">{label}</p>
               </div>
             ))}
@@ -38,7 +38,7 @@ export default function AuthLayout() {
         </p>
       </div>
       {/* 우측 폼 영역 */}
-      <div className="furrows-light flex w-full items-center justify-center bg-paper px-6 lg:w-[520px]">
+      <div className="grid-paper flex w-full items-center justify-center bg-paper px-6 lg:w-[520px]">
         <div className="w-full max-w-sm">
           <Outlet />
         </div>

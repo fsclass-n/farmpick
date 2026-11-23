@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
 from ..mock_data import TEST_ACCOUNTS
-from ..security import create_access_token, get_current_user, verify_password
+from ..security import create_access_token, get_current_user, verify_admin_secret, verify_password
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
@@ -25,7 +25,34 @@ def test_accounts():
     return [
         {"email": u["email"], "password": u["password"], "role": u["role"], "role_label": u["role_label"], "name": u["name"]}
         for u in TEST_ACCOUNTS
+        if not u.get("hidden")
     ]
+
+
+def _issue(user: dict) -> dict:
+    return {"access_token": create_access_token(user), "user": _public_user(user)}
+
+
+def _account(role: str) -> dict:
+    return next(u for u in TEST_ACCOUNTS if u["role"] == role)
+
+
+class AdminLoginRequest(BaseModel):
+    secret_key: str
+
+
+@router.post("/admin-login")
+def admin_login(body: AdminLoginRequest):
+    """실제 관리자: .env ADMIN_SECRET_KEY 인증 → 전체 CRUD 권한"""
+    if not verify_admin_secret(body.secret_key):
+        raise HTTPException(401, "관리자 보안 키가 올바르지 않습니다.")
+    return _issue(_account("admin"))
+
+
+@router.post("/test-admin-login")
+def test_admin_login():
+    """테스트 관리자: 관리자 화면 열람만 가능한 읽기 전용 권한"""
+    return _issue(_account("admin_readonly"))
 
 
 @router.post("/login")
@@ -33,10 +60,12 @@ def login(body: LoginRequest):
     user = next((u for u in TEST_ACCOUNTS if u["email"] == body.email), None)
     if user is None:
         raise HTTPException(401, "이메일 또는 비밀번호가 올바르지 않습니다.")
+    if user["password_hash"] == "key-only":
+        raise HTTPException(403, "관리자 계정은 보안 키 인증으로만 로그인할 수 있습니다.")
     ok = body.password == user["password"] if user["password_hash"] == "demo" else verify_password(body.password, user["password_hash"])
     if not ok:
         raise HTTPException(401, "이메일 또는 비밀번호가 올바르지 않습니다.")
-    return {"access_token": create_access_token(user), "user": _public_user(user)}
+    return _issue(user)
 
 
 class RegisterRequest(BaseModel):

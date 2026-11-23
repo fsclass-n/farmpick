@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from ..database import get_session
-from ..mock_data import CROPS, PESTS
+from ..mock_data import CONTROL_MANUALS, CROPS, PESTS
 
 router = APIRouter(prefix="/api/pests", tags=["pests"])
 
@@ -36,6 +36,11 @@ def list_pests(type: str | None = None, crop: str | None = None, q: str | None =
 @router.get("/crops")
 def crops():
     return CROPS
+
+
+@router.get("/manuals")
+def manuals(pest: str | None = None):
+    return [m for m in CONTROL_MANUALS if not pest or m["pest"] == pest]
 
 
 @router.get("/{pest_id}")

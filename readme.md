@@ -41,5 +41,12 @@ cd frontend && npm install && npm run dev                      # http://localhos
 |---|---|---|
 | 농가 | farmer@farmpick.kr | Farm1234! |
 | 기업 담당자 | company@farmpick.kr | Corp1234! |
-| 관리자 | admin@farmpick.kr | Admin1234! |
-| 테스트 관리자(읽기 전용) | viewer@farmpick.kr | View1234! |
+
+### 관리자 권한 체계
+| 구분 | 진입 방법 | 권한 |
+|---|---|---|
+| 관리자 | 로그인 › `관리자` 탭 › `.env` 의 `ADMIN_SECRET_KEY` 입력 (`POST /api/auth/admin-login`) | 병해충 DB · 방제 매뉴얼 · 진단 이력 · 농가/회원 전체 CRUD |
+| 테스트 관리자 | 로그인 › `관리자` 탭 › **테스트 관리자 로그인** 버튼 (`POST /api/auth/test-admin-login`) | 관리 콘솔 전체 열람, 생성·수정·삭제 차단 (Read-Only) |
+
+- 관리자 계정은 비밀번호 로그인이 불가하며 보안 키(상수 시간 비교)로만 인증됩니다.
+- 읽기 전용 차단은 2중으로 적용됩니다: 프런트 `api()` 레이어(1차) + 백엔드 전역 미들웨어 `readonly_guard`(2차, 모든 POST/PUT/PATCH/DELETE).

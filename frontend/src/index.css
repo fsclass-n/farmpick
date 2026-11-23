@@ -3,35 +3,39 @@
 @theme {
   --font-heading: "IBM Plex Sans KR", sans-serif;
   --font-body: "Noto Sans KR", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
 
-  /* 모노톤 잉크 */
-  --color-ink-50: #f6f6f4;
-  --color-ink-100: #ececea;
-  --color-ink-200: #d8d8d4;
-  --color-ink-300: #b6b6b1;
-  --color-ink-400: #8f8f8a;
-  --color-ink-500: #6b6b66;
-  --color-ink-600: #4c4c48;
-  --color-ink-700: #35352f;
-  --color-ink-800: #23231f;
-  --color-ink-900: #151512;
-  --color-ink-950: #0c0c0a;
+  /* 소일(토양) 잉크 — 따뜻한 흙빛 무채색 */
+  --color-ink-50: #f7f4ec;
+  --color-ink-100: #ece7da;
+  --color-ink-200: #dcd4c2;
+  --color-ink-300: #bfb49d;
+  --color-ink-400: #998d76;
+  --color-ink-500: #75695a;
+  --color-ink-600: #574d41;
+  --color-ink-700: #3e372f;
+  --color-ink-800: #2a2520;
+  --color-ink-900: #1c1915;
+  --color-ink-950: #11100d;
 
-  /* 세이지 그린 — 브랜드 포인트 */
-  --color-forest-50: #f2f6f3;
-  --color-forest-100: #e2ece6;
-  --color-forest-200: #c6dcd0;
-  --color-forest-300: #a3c6b4;
-  --color-forest-400: #7aa892;
-  --color-forest-500: #55896f;
-  --color-forest-600: #3f6f58;
-  --color-forest-700: #345a49;
-  --color-forest-800: #26433a;
-  --color-forest-900: #1b2f29;
-  --color-forest-950: #101f1a;
+  /* 클로로필 그린 — 브랜드 포인트 */
+  --color-forest-50: #eef6ec;
+  --color-forest-100: #d7ebd2;
+  --color-forest-200: #b2d7aa;
+  --color-forest-300: #84bd79;
+  --color-forest-400: #58a04e;
+  --color-forest-500: #3b8634;
+  --color-forest-600: #2c6d28;
+  --color-forest-700: #235722;
+  --color-forest-800: #1c451c;
+  --color-forest-900: #143316;
+  --color-forest-950: #0b200d;
 
-  --color-paper: #faf9f6;
-  --color-harvest: #b98a4e;
+  --color-paper: #f3efe4;      /* 표본 대지(크라프트지) */
+  --color-sheet: #fbf9f3;      /* 카드 면 */
+  --color-harvest: #c97a12;    /* 주의 · 수확 앰버 */
+  --color-blight: #b83f27;     /* 경보 · 병반 레드 */
+  --color-chloro: #c6e04f;     /* 스캔 하이라이트 */
 }
 
 html {
@@ -210,4 +214,113 @@ body {
 @keyframes pulseDot {
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.4; transform: scale(0.75); }
+}
+
+/* =========================================================
+   FIELD SPECIMEN LAB — farmpick 디자인 시스템 확장
+   ========================================================= */
+.font-mono { font-family: var(--font-mono); }
+
+/* 야장(野帳) 모눈 배경 */
+.grid-paper {
+  background-color: var(--color-paper);
+  background-image:
+    linear-gradient(rgba(59, 134, 52, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59, 134, 52, 0.07) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+.grid-paper-dark {
+  background-image:
+    linear-gradient(rgba(198, 224, 79, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(198, 224, 79, 0.06) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+/* 표본 태그 카드 */
+.specimen {
+  position: relative;
+  background: var(--color-sheet);
+  border: 1px solid var(--color-ink-200);
+  border-radius: 14px;
+  box-shadow: 0 1px 0 rgba(17, 16, 13, 0.04);
+  transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+}
+.specimen:hover {
+  border-color: var(--color-ink-300);
+  box-shadow: 0 14px 32px -12px rgba(28, 25, 21, 0.22);
+  transform: translateY(-3px);
+}
+.specimen-hole::before {
+  content: "";
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 10px;
+  height: 10px;
+  border-radius: 9999px;
+  background: var(--color-paper);
+  box-shadow: inset 0 1px 2px rgba(17, 16, 13, 0.25);
+}
+.tag-code {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  color: var(--color-ink-400);
+}
+
+/* 심각도 스탬프 */
+.stamp {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 1.5px solid currentColor;
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transform: rotate(-2deg);
+}
+.sev-high { color: var(--color-blight); }
+.sev-mid { color: var(--color-harvest); }
+.sev-low { color: var(--color-forest-600); }
+
+/* 루페(돋보기) 스캔 */
+.loupe {
+  position: absolute;
+  border-radius: 9999px;
+  border: 2px solid var(--color-chloro);
+  box-shadow: 0 0 0 6px rgba(198, 224, 79, 0.15), 0 0 24px rgba(198, 224, 79, 0.35);
+  animation: loupeMove 7s ease-in-out infinite;
+}
+@keyframes loupeMove {
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(60px, 40px); }
+  66% { transform: translate(-30px, 70px); }
+}
+.lesion-pulse { animation: lesion 2.4s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
+@keyframes lesion { 0%, 100% { opacity: 0.85; transform: scale(1); } 50% { opacity: 1; transform: scale(1.15); } }
+
+/* 읽기 전용 경고 띠 */
+.hazard {
+  background: repeating-linear-gradient(-45deg, #c97a12 0 12px, #1c1915 12px 24px);
+}
+
+/* 세그먼트 탭 */
+.seg { display: inline-flex; gap: 4px; padding: 4px; border-radius: 9999px; background: var(--color-ink-100); }
+.seg button { border-radius: 9999px; padding: 6px 14px; font-size: 13px; font-weight: 500; color: var(--color-ink-500); transition: all 0.2s; }
+.seg button[aria-selected="true"] { background: var(--color-ink-900); color: #fff; }
+
+/* 방제 단계 레일 */
+.rail { position: relative; }
+.rail::before {
+  content: "";
+  position: absolute;
+  left: 15px;
+  top: 8px;
+  bottom: 8px;
+  width: 2px;
+  background: repeating-linear-gradient(var(--color-forest-300) 0 6px, transparent 6px 12px);
 }
